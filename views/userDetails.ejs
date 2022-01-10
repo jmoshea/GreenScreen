@@ -1,0 +1,32 @@
+<%- include('partials/header', {title:"Account details"}) -%>
+
+<h2>User - <%=user.username%></h2>
+
+<table>
+  <tr>
+    <th>
+      Name:
+    </th>
+    <td>
+      <%=user.username%>
+    </td>
+  </tr>
+  <tr>
+    <th>
+      Rarest:
+    </th>
+    <td>
+      <%=user.rarest%>
+    </td>
+  </tr>
+  <tr>
+    <th>
+      Collection:
+    </th>
+    <td>
+      <%=user.collection%>
+    </td>
+  </tr>
+</table>
+
+<%- include('partials/footer') -%>

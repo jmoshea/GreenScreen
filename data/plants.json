@@ -1,0 +1,26 @@
+{
+  "plant1": {
+    "name": "plant1",
+    "genus": "genus1",
+    "rarity": "common",
+    "image": "link"
+  },
+  "plant2": {
+    "name": "plant2",
+    "genus": "genus2",
+    "rarity": "common",
+    "image": "link"
+  },
+  "plant3": {
+    "name": "plant3",
+    "genus": "genus3",
+    "rarity": "common",
+    "image": "link"
+  },
+  "Welwitschia": {
+    "name": "Welwitschia",
+    "genus": "genus4",
+    "rarity": "rare",
+    "image": "link"
+  }
+}

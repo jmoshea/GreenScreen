@@ -1,4 +1,4 @@
-<%- include('partials/header', {title:"P, R, S: High Scores"}) -%>
+<%- include('partials/header', {title:"Green Screen: High Scores"}) -%>
 
 <h2>High Scores</h2>
 <table>
@@ -7,33 +7,22 @@
       User
     </th>
     <th>
-      Wins
+      Rarest
     </th>
     <th>
-      Losses
-    </th>
-    <th>
-      Ties
-    </th>
-    <th>
-      Win %
+      Collection
     </th>
   </tr>
-  <%for(let i =0; i<opponents.length; i++){%>
+  <tr>
+  <%for(let i =0; i<users.length; i++){%>
   <th>
-    <a href="/opponent/<%=opponents[i].name%>"><%=opponents[i].name%></a>
+    <a href="/user/<%=users[i].username%>"><%=users[i].username%></a>
   </th>
   <th>
-    <%=opponents[i].win%>
+    <%=users[i].rarest%>
   </th>
   <th>
-    <%=opponents[i].lose%>
-  </th>
-  <th>
-    <%=opponents[i].tie%>
-  </th>
-  <th>
-    <%=opponents[i].win_percent%>
+    <%=users[i].collection%>
   </th>
   </tr>
   <%}%>

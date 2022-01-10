@@ -1,0 +1,12 @@
+<%- include('partials/header', {title:"Your Garden"}) -%>
+
+<h2>Sign in:</h2>
+
+<form action="/garden" method="POST">
+  <label for="username">Username:</label>
+  <input type="text" id="name" name="username" value=""><br>
+  <br><br>
+  <input type="submit" value="Sign in">
+</form>
+
+<%- include('partials/footer') -%>

@@ -1,0 +1,16 @@
+<%- include('partials/header', {title:"Draw a Plant"}) -%>
+
+<h2>Draw a plant!</h2>
+<form action="/results" method="GET">
+  <label for="user">Choose an account:</label>
+    <select id="user" name="user">
+      <%for(user in data){%>
+
+      <option value="<%=user%>"><%=user%></option>
+      <%}%>
+    </select>
+  <input type="submit" value="Draw!">
+
+</form>
+
+<%- include('partials/footer') -%>

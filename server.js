@@ -22,57 +22,63 @@ app.get('/', function(request, response) {
   response.render("index");
 });
 
-app.get('/play', function(request, response) {
-    let players = JSON.parse(fs.readFileSync('data/opponents.json'));
+app.get('/draw', function(request, response) {
+    let users = JSON.parse(fs.readFileSync('data/users.json'));
     response.status(200);
     response.setHeader('Content-Type', 'text/html')
-    response.render("play", {
-      data: players
+    response.render("draw", {
+      data: users
     });
 });
 
+app.get('/garden', function(request, response) {
+    let users = JSON.parse(fs.readFileSync('data/users.json'));
+    response.status(200);
+    response.setHeader('Content-Type', 'text/html')
+    response.render("garden", {
+      data: users
+    });
+});
+
+app.post('/garden', function(request, response) {
+    let username = request.body.username;
+    if(username){
+      response.status(200);
+      response.setHeader('Content-Type', 'text/html')
+      response.redirect("/user/"+username);
+    }else{
+      response.status(400);
+      response.setHeader('Content-Type', 'text/html')
+      response.render("error", {
+        "errorCode":"400"
+      });
+    }
+});
+
 app.get('/results', function(request, response) {
-    let players = JSON.parse(fs.readFileSync('data/opponents.json'));
+    let users = JSON.parse(fs.readFileSync('data/users.json'));
+    let plants = JSON.parse(fs.readFileSync('data/plants.json'));
 
     //accessing URL query string information from the request object
-    let opponent = request.query.opponent;
-    let playerThrow = request.query.throw;
+    let user = request.query.user;
+    let sample = plants.plant1;
 
-    if(players[opponent]){
-      let opponentThrowChoices=["Paper", "Rock", "Scissors"];
-      let results={};
-
-      results["playerThrow"]=playerThrow;
-      results["opponentName"]=opponent;
-      results["opponentPhoto"]=players[opponent].photo;
-      results["opponentThrow"] = opponentThrowChoices[Math.floor(Math.random() * 3)];
-
-      if(results["playerThrow"]===results["opponentThrow"]){
-        results["outcome"] = "tie";
-      }else if(results["playerThrow"]==="Paper"){
-        if(results["opponentThrow"]=="Scissors") results["outcome"] = "lose";
-        else results["outcome"] = "win";
-      }else if(results["playerThrow"]==="Scissors"){
-        if(results["opponentThrow"]=="Rock") results["outcome"] = "lose";
-        else results["outcome"] = "win";
-      }else{
-        if(results["opponentThrow"]=="Paper") results["outcome"] = "lose";
-        else results["outcome"] = "win";
-      }
-
-      if(results["outcome"]=="lose") players[opponent]["win"]++;
-      else if(results["outcome"]=="win") players[opponent]["lose"]++;
-      else players[opponent]["tie"]++;
+    //let plant = request.query.plant;
+    if(users[user]){
+      let results = {};
+      results["user"] = user;
+      results["card"] = sample;
 
       //update data store to permanently remember results
-      fs.writeFileSync('data/opponents.json', JSON.stringify(players));
+      fs.writeFileSync('data/users.json', JSON.stringify(users));
 
       response.status(200);
       response.setHeader('Content-Type', 'text/html')
       response.render("results", {
         data: results
       });
-    }else{
+    }
+    else {
       response.status(404);
       response.setHeader('Content-Type', 'text/html')
       response.render("error", {
@@ -82,40 +88,36 @@ app.get('/results', function(request, response) {
 });
 
 app.get('/scores', function(request, response) {
-  let opponents = JSON.parse(fs.readFileSync('data/opponents.json'));
-  let opponentArray=[];
+  let users = JSON.parse(fs.readFileSync('data/users.json'));
+  let userArray = [];
 
   //create an array to use sort, and dynamically generate win percent
-  for(name in opponents){
-    opponents[name].win_percent = (opponents[name].win/parseFloat(opponents[name].win+opponents[name].lose+opponents[name].tie) * 100).toFixed(2);
-    if(opponents[name].win_percent=="NaN") opponents[name].win_percent=0;
-    opponentArray.push(opponents[name])
+  for (user in users){
+    console.log(users[user]);
+    userArray.push(users[user]);
   }
-  opponentArray.sort(function(a, b){
-    return parseFloat(b.win_percent)-parseFloat(a.win_percent);
-  })
+  /*opponentArray.sort(function(a, b){
+    return parseFloat(b.rarest)-parseFloat(a.rarest);
+  });*/
 
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
   response.render("scores",{
-    opponents: opponentArray
+    users: userArray
   });
 });
 
-app.get('/opponent/:opponentName', function(request, response) {
-  let opponents = JSON.parse(fs.readFileSync('data/opponents.json'));
+app.get('/user/:username', function(request, response) {
+  let users = JSON.parse(fs.readFileSync('data/users.json'));
 
   // using dynamic routes to specify resource request information
-  let opponentName = request.params.opponentName;
+  let username = request.params.username;
 
-  if(opponents[opponentName]){
-    opponents[opponentName].win_percent = (opponents[opponentName].win/parseFloat(opponents[opponentName].win+opponents[opponentName].lose+opponents[opponentName].tie) * 100).toFixed(2);
-    if(opponents[opponentName].win_percent=="NaN") opponents[opponentName].win_percent=0;
-
+  if(users[username]){
     response.status(200);
     response.setHeader('Content-Type', 'text/html')
-    response.render("opponentDetails",{
-      opponent: opponents[opponentName]
+    response.render("userDetails",{
+      user: users[username]
     });
 
   }else{
@@ -127,30 +129,27 @@ app.get('/opponent/:opponentName', function(request, response) {
   }
 });
 
-app.get('/opponentCreate', function(request, response) {
+app.get('/createAccount', function(request, response) {
     response.status(200);
     response.setHeader('Content-Type', 'text/html')
-    response.render("opponentCreate");
+    response.render("createAccount");
 });
 
-app.post('/opponentCreate', function(request, response) {
-    let opponentName = request.body.opponentName;
-    let opponentPhoto = request.body.opponentPhoto;
-    if(opponentName&&opponentPhoto){
-      let opponents = JSON.parse(fs.readFileSync('data/opponents.json'));
-      let newOpponent={
-        "name": opponentName,
-        "photo": opponentPhoto,
-        "win":0,
-        "lose": 0,
-        "tie": 0,
+app.post('/createAccount', function(request, response) {
+    let username = request.body.username;
+    if(username){
+      let users = JSON.parse(fs.readFileSync('data/users.json'));
+      let newUser={
+        "username": username,
+        "rarest": "",
+        "collection": [],
       }
-      opponents[opponentName] = newOpponent;
-      fs.writeFileSync('data/opponents.json', JSON.stringify(opponents));
+      users[username] = newUser;
+      fs.writeFileSync('data/users.json', JSON.stringify(users));
 
       response.status(200);
       response.setHeader('Content-Type', 'text/html')
-      response.redirect("/opponent/"+opponentName);
+      response.redirect("/user/"+username);
     }else{
       response.status(400);
       response.setHeader('Content-Type', 'text/html')
