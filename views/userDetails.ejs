@@ -16,17 +16,53 @@
       Rarest:
     </th>
     <td>
-      <%=user.rarest%>
+      <%=user.rarest.name%>
     </td>
   </tr>
+</table>
+<br>
+<h3>Collection: </h3>
+<table>
   <tr>
     <th>
-      Collection:
+      Name
     </th>
-    <td>
-      <%=user.collection%>
-    </td>
+    <th>
+      Scientific Name
+    </th>
+    <th>
+      Rarity
+    </th>
   </tr>
+  <% if (user.collection != []) {%>
+    <%for(element of user.collection){%>
+    <tr>
+    <td>
+    <%=element.name%>
+    </td>
+    <td>
+    <%=element.genus%>
+    </td>
+    <td>
+    <%if (element.rarity == '1') { %>
+      Extremely Rare
+    <%}%>
+    <%if (element.rarity == '2') { %>
+      Very Rare
+    <%}%>
+    <%if (element.rarity == '3') { %>
+      Rare
+    <%}%>
+    <%if (element.rarity == '4') { %>
+      Somewhat Rare
+    <%}%>
+    <%if (element.rarity == '5') { %>
+      Common
+    <%}%>
+    </td>
+    </tr>
+    <%}%>
+  <%}%>
 </table>
 
 <%- include('partials/footer') -%>

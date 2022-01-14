@@ -1,6 +1,25 @@
 <%- include('partials/header', {title:"Results: Green Screen"}) -%>
 
 <h2>You drew a <%=data.card.name%></h2>
-
+<br>
+<h3>Scientific Name: <%=data.card.genus%></h3>
+<br>
+<h3>Rarity:
+<%if (data.card.rarity == '1') { %>
+  Extremely Rare
+<%}%>
+<%if (data.card.rarity == '2') { %>
+  Very Rare
+<%}%>
+<%if (data.card.rarity == '3') { %>
+  Rare
+<%}%>
+<%if (data.card.rarity == '4') { %>
+  Somewhat Rare
+<%}%>
+<%if (data.card.rarity == '5') { %>
+  Common
+<%}%>
+</h3>
 
 <%- include('partials/footer') -%>

@@ -57,18 +57,24 @@ app.post('/garden', function(request, response) {
 
 app.get('/results', function(request, response) {
     let users = JSON.parse(fs.readFileSync('data/users.json'));
-    let plants = JSON.parse(fs.readFileSync('data/plants.json'));
+    let plants = JSON.parse(fs.readFileSync('data/plants2.json'));
 
     //accessing URL query string information from the request object
     let user = request.query.user;
-    let sample = plants.plant1;
-
-    //let plant = request.query.plant;
-    if(users[user]){
+    let sample = plants[Math.floor(Math.random()*plants.length)];
+    if(users[user] && sample.name != ""){
       let results = {};
       results["user"] = user;
       results["card"] = sample;
-
+      //check if drawn plant is a repeat:
+      if (users[user]["collection"].indexOf(sample) < 0) {
+        //add plant to collection
+        users[user]["collection"].push(sample);
+      }
+      if (users[user]["rarest"] == "" || parseInt(users[user]["rarest"].rarity) >= parseInt(sample.rarity)) { //
+        //make new plant rarest
+        users[user]["rarest"] = sample;
+      }
       //update data store to permanently remember results
       fs.writeFileSync('data/users.json', JSON.stringify(users));
 
@@ -93,12 +99,11 @@ app.get('/scores', function(request, response) {
 
   //create an array to use sort, and dynamically generate win percent
   for (user in users){
-    console.log(users[user]);
     userArray.push(users[user]);
   }
-  /*opponentArray.sort(function(a, b){
-    return parseFloat(b.rarest)-parseFloat(a.rarest);
-  });*/
+  userArray.sort(function(a, b){
+    return parseFloat(b.collection.length)-parseFloat(a.collection.length);
+  });
 
   response.status(200);
   response.setHeader('Content-Type', 'text/html')

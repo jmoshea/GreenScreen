@@ -1,6 +1,6 @@
 <%- include('partials/header', {title:"Green Screen: High Scores"}) -%>
 
-<h2>High Scores</h2>
+<h2>Leaderboard</h2>
 <table>
   <tr>
     <th>
@@ -10,7 +10,7 @@
       Rarest
     </th>
     <th>
-      Collection
+      Collection Size
     </th>
   </tr>
   <tr>
@@ -19,10 +19,10 @@
     <a href="/user/<%=users[i].username%>"><%=users[i].username%></a>
   </th>
   <th>
-    <%=users[i].rarest%>
+    <%=users[i].rarest.name%>
   </th>
   <th>
-    <%=users[i].collection%>
+    <%=users[i].collection.length%>
   </th>
   </tr>
   <%}%>
